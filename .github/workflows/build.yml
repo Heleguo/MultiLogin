@@ -42,14 +42,12 @@ jobs:
           fi
 
       - name: Build Dev
-        if: env.release == 'false'
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: current
           arguments: ShadowJar
 
       - name: Build Release
-        if: env.release == 'true'
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: current
@@ -60,14 +58,9 @@ jobs:
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
           rm -f ~/.gradle/caches/modules-2/gc.properties
 
-      - name: Publish Release
-        if: env.release == 'true'
-        uses: marvinpinto/action-automatic-releases@latest
+      - name: Upload
+        uses: actions/upload-artifact@v4.6.2
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "v${{ env.version }}"
-          draft: false
-          prerelease: false
-          title: "MultiLogin v${{ env.version }}"
-          files: |
-            velocity/build/libs/MultiLogin-Velocity-${{ env.version }}.jar
+          path: ./velocity/build/libs/MultiLogin-Velocity-*
+          
+
